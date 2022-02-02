@@ -1,0 +1,22 @@
+{
+  "name": "firetruck-compact",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.4.7"
+  },
+  "dependencies": {
+    "csv-parse": "^5.0.4",
+    "csvtojson": "^2.0.10",
+    "electron": "^16.0.7",
+    "electron-context-menu": "^3.1.1",
+    "firebase-admin": "^10.0.1"
+  }
+}
