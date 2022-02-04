@@ -27,12 +27,16 @@ ipcMain.on('getDocuments', async (event, arg) => {
 
 ipcMain.on('browseServiceAccount', (event, arg) => {
   console.log('call browseServiceAccount')
-  const path = dialog.showOpenDialogSync({
-    properties: ['openFile'],
-    filters: [{name: 'Service Account Key', extensions: ['json']}]
-  })
-  if(path !== undefined){
-    event.returnValue = path[0]
+  try{
+    const path = dialog.showOpenDialogSync({
+      properties: ['openFile'],
+      filters: [{name: 'Service Account Key', extensions: ['json']}]
+    })
+    if(path !== undefined){
+      event.returnValue = path[0]
+    }
+  }catch(e){
+    console.log(e)
   }
 })
 
@@ -125,7 +129,7 @@ ipcMain.on('exportCSV', async (event, { filename, path, collId }) => {
 })
 
 ipcMain.on('importCSV', async (event, { path, collId, options }) => {
-  console.log('call importCSV')
+  console.log('call importCSV', path, collId, options)
   const data = await csvtojsonV2(options).fromFile(path)
   if(collId != undefined){
     await firebase.replaceImportData(collId, data)

@@ -1,7 +1,7 @@
 {
-  "name": "firetruck-compact",
+  "name": "FireTruk",
   "version": "1.0.0",
-  "description": "",
+  "description": "Import-Export Firestore with Ease",
   "main": "main.js",
   "scripts": {
     "test": "jest",
