@@ -1,22 +1,31 @@
 {
   "name": "FireTruk",
-  "version": "1.0.0",
-  "description": "Import-Export Firestore with Ease",
+  "version": "0.1.0",
+  "description": "Manage Firestore with Ease",
   "main": "main.js",
   "scripts": {
     "test": "jest",
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "author": "",
+  "author": "zmachmobile",
   "license": "ISC",
   "devDependencies": {
+    "electron": "^16.0.7",
+    "electron-builder": "^22.14.5",
     "jest": "^27.4.7"
   },
   "dependencies": {
     "csv-parse": "^5.0.4",
     "csvtojson": "^2.0.10",
-    "electron": "^16.0.7",
     "electron-context-menu": "^3.1.1",
     "firebase-admin": "^10.0.1"
+  },
+  "build": {
+    "appId": "com.zmachmobile.firetruk",
+    "mac": {
+      "category": "Utilities"
+    }
   }
 }
