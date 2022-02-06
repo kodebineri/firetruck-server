@@ -6,14 +6,25 @@ const ApiResponse = require('./response')
 
 ipcMain.on('init', (event, arg) => {
   console.log('call init')
-  // const dummy = '/Users/zamahsyari/Downloads/kamus-quran-mudah-dev-firebase-adminsdk-5ru3a-9653c12ff2.json'
-  firebase.initFirebase(arg)
+  try{
+    // const dummy = '/Users/zamahsyari/Downloads/kamus-quran-mudah-dev-firebase-adminsdk-5ru3a-9653c12ff2.json'
+    firebase.initFirebase(arg)
+    event.returnValue = new ApiResponse(true, [])
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, [], e)
+  }
 })
 
 ipcMain.on('getCollections', async (event, arg) => {
   console.log('call getCollections')
-  const data = await firebase.getAllCollections()
-  event.returnValue = data
+  try{
+    const data = await firebase.getAllCollections()
+    event.returnValue = new ApiResponse(true, data)
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, [], e)
+  }
 })
 
 ipcMain.on('getDocuments', async (event, {collId, query}) => {
@@ -50,59 +61,88 @@ ipcMain.on('browseServiceAccount', (event, arg) => {
       filters: [{name: 'Service Account Key', extensions: ['json']}]
     })
     if(path !== undefined){
-      event.returnValue = path[0]
+      event.returnValue = new ApiResponse(true, path[0])
+    }else{
+      event.returnValue = new ApiResponse(false, '', e)
+    }
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+  }
+})
+
+ipcMain.on('browseOutputDirectory', (event, arg) => {
+  console.log('call browseOutputDirectory')
+  try{
+    const path = dialog.showOpenDialogSync({
+      properties: ['openDirectory']
+    })
+    if(path !== undefined){
+      event.returnValue = new ApiResponse(true, path[0])
+    }else{
+      event.returnValue = new ApiResponse(false, '', e)
+    }
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+  }
+})
+
+ipcMain.on('browseInputDirectory', (event, arg) => {
+  console.log('call browseInputDirectory')
+  try{
+    const path = dialog.showOpenDialogSync({
+      properties: ['openFile']
+    })
+    if(path !== undefined){
+      event.returnValue = new ApiResponse(true, path[0])
+    }else{
+      event.returnValue = new ApiResponse(false, '', e)
+    }
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+  }
+})
+
+ipcMain.on('exportJson', async (event, { filename, path, collId }) => {
+  console.log('call exportJson')
+  try{
+    let data = []
+    if(collId != undefined){
+      data = await firebase.getDocuments(collId)
+    }
+    fs.writeFile(path + '/' + filename + '.json', JSON.stringify(data, null, '\t'), (err) => {
+      console.log(err)
+    })
+  }catch(e){
+    console.log(e)
+  }
+})
+
+ipcMain.on('importJson', async (event, { path, collId }) => {
+  console.log('call importJson')
+  try{
+    const raw = await fs.openSync(path)
+    const data = JSON.parse(raw)
+    if(collId != undefined){
+      await firebase.replaceImportData(collId, data)
     }
   }catch(e){
     console.log(e)
   }
 })
 
-ipcMain.on('browseOutputDirectory', (event, arg) => {
-  console.log('call browseOutputDirectory')
-  const path = dialog.showOpenDialogSync({
-    properties: ['openDirectory']
-  })
-  if(path !== undefined){
-    event.returnValue = path[0]
-  }
-})
-
-ipcMain.on('browseInputDirectory', (event, arg) => {
-  console.log('call browseInputDirectory')
-  const path = dialog.showOpenDialogSync({
-    properties: ['openFile']
-  })
-  if(path !== undefined){
-    event.returnValue = path[0]
-  }
-})
-
-ipcMain.on('exportJson', async (event, { filename, path, collId }) => {
-  console.log('call exportJson')
-  let data = []
-  if(collId != undefined){
-    data = await firebase.getDocuments(collId)
-  }
-  fs.writeFile(path + '/' + filename + '.json', JSON.stringify(data, null, '\t'), (err) => {
-    console.log(err)
-  })
-})
-
-ipcMain.on('importJson', async (event, { path, collId }) => {
-  console.log('call importJson')
-  const raw = await fs.openSync(path)
-  const data = JSON.parse(raw)
-  if(collId != undefined){
-    await firebase.replaceImportData(collId, data)
-  }
-})
-
 ipcMain.on('addJson', async (event, { path, collId }) => {
   console.log('call addJson')
-  const raw = await fs.openSync(path)
-  const data = JSON.parse(raw)
-  if(collId != undefined){
-    await firebase.importData(collId, data)
+  try{
+    const raw = await fs.openSync(path)
+    const data = JSON.parse(raw)
+    if(collId != undefined){
+      await firebase.importData(collId, data)
+    }
+  }catch(e){
+    console.log(e)
   }
 })
 
@@ -121,86 +161,130 @@ const getHeader = (docs) => {
 
 ipcMain.on('exportCSV', async (event, { filename, path, collId }) => {
   console.log('call exportCSV')
-  let data = []
-  let header = []
-  if(collId != undefined){
-    data = await firebase.getDocuments(collId)
-    header = getHeader(data)
-  }
-  let content = ''
-  const headerRow = []
-  header.forEach((head) => {
-    headerRow.push(JSON.stringify(head))
-  })
-  content += headerRow.join(';') + '\n'
-  data.forEach((doc) => {
-    const dataRow = []
-    Object.keys(doc).forEach((key) => {
-      dataRow.push(JSON.stringify(doc[key]))
+  try{
+    let data = []
+    let header = []
+    if(collId != undefined){
+      data = await firebase.getDocuments(collId)
+      header = getHeader(data)
+    }
+    let content = ''
+    const headerRow = []
+    header.forEach((head) => {
+      headerRow.push(JSON.stringify(head))
     })
-    content += dataRow.join(';') + '\n'
-  })
-  fs.writeFile(path + '/' + filename + '.csv', content, (err) => {
-    console.log(err)
-  })
+    content += headerRow.join(';') + '\n'
+    data.forEach((doc) => {
+      const dataRow = []
+      Object.keys(doc).forEach((key) => {
+        dataRow.push(JSON.stringify(doc[key]))
+      })
+      content += dataRow.join(';') + '\n'
+    })
+    fs.writeFile(path + '/' + filename + '.csv', content, (err) => {
+      console.log(err)
+    })
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('importCSV', async (event, { path, collId, options }) => {
   console.log('call importCSV', path, collId, options)
-  const data = await csvtojsonV2(options).fromFile(path)
-  if(collId != undefined){
-    await firebase.replaceImportData(collId, data)
+  try{
+    const data = await csvtojsonV2(options).fromFile(path)
+    if(collId != undefined){
+      await firebase.replaceImportData(collId, data)
+    }
+  }catch(e){
+    console.log(e)
   }
 })
 
 ipcMain.on('addCSV', async (event, { path, collId }) => {
   console.log('call addCSV')
-  const data = await csvtojsonV2({
-    quote: 'off'
-  }).fromFile(path)
-  if(collId != undefined){
-    await firebase.importData(collId, data)
+  try{
+    const data = await csvtojsonV2({
+      quote: 'off'
+    }).fromFile(path)
+    if(collId != undefined){
+      await firebase.importData(collId, data)
+    }
+  }catch(e){
+    console.log(e)
   }
 })
 
 ipcMain.on('addCollection', async (event, {collId, docId, data}) => {
   console.log('call addCollection', collId, docId, data)
-  event.returnValue = await firebase.addCollection(collId, docId, data)
+  try{
+    await firebase.addCollection(collId, docId, data)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('deleteCollection', async (event, collId) => {
   console.log('call deleteCollection', collId)
-  event.returnValue = await firebase.deleteCollection(collId)
+  try{
+    await firebase.deleteCollection(collId)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('renameCollection', async (event, {collId, newName}) => {
   console.log('call renameCollection', collId, newName)
-  event.returnValue = await firebase.renameCollection(collId, newName)
+  try{
+    await firebase.renameCollection(collId, newName)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('duplicateCollection', async (event, {collId, newName}) => {
   console.log('call duplicateCollection', collId, newName)
-  event.returnValue = await firebase.duplicateCollection(collId, newName)
+  try{
+    await firebase.duplicateCollection(collId, newName)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('addDocument', async (event, {collId, docId, data}) => {
   console.log('call addDocument', collId, docId, data)
-  event.returnValue = await firebase.addDocument(collId, docId, data)
+  try{
+    await firebase.addDocument(collId, docId, data)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('editDocument', async (event, {collId, docId, data}) => {
   console.log('call editDocument', collId, docId, data)
-  event.returnValue = await firebase.updateDocument(collId, docId, data)
+  try{
+    await firebase.updateDocument(collId, docId, data)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('deleteDocument', async (event, {collId, docId}) => {
   console.log('call deleteDocument', docId)
-  event.returnValue = await firebase.deleteDocumentById(collId, docId)
+  try{
+    await firebase.deleteDocumentById(collId, docId)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId}) => {
   console.log('call duplicateDocument', collId, docId, newDocId)
-  event.returnValue = await firebase.duplicateDocument(collId, docId, newDocId)
+  try{
+    await firebase.duplicateDocument(collId, docId, newDocId)
+  }catch(e){
+    console.log(e)
+  }
 })
 
 ipcMain.handle('dark-mode:toggle', () => {
