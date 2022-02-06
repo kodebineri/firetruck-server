@@ -41,6 +41,27 @@ contextMenu({
       click: () => {
         browserWindow.webContents.send('deleteCollectionAction', getKeyValue(parameters.linkURL).value)
       }
-    }
+    },
+    {
+      label: 'Edit',
+      visible: getKeyValue(parameters.linkURL).key === 'doc',
+      click: () => {
+        browserWindow.webContents.send('editDocumentAction', getKeyValue(parameters.linkURL).value)
+      }
+    },
+    {
+      label: 'Delete',
+      visible: getKeyValue(parameters.linkURL).key === 'doc',
+      click: () => {
+        browserWindow.webContents.send('deleteDocumentAction', getKeyValue(parameters.linkURL).value)
+      }
+    },
+    {
+      label: 'Duplicate',
+      visible: getKeyValue(parameters.linkURL).key === 'doc',
+      click: () => {
+        browserWindow.webContents.send('duplicateDocumentAction', getKeyValue(parameters.linkURL).value)
+      }
+    },
   ]
 })

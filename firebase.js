@@ -1,5 +1,6 @@
 const admin = require('firebase-admin')
-const { cert } = require('firebase-admin/app')
+const { cert } = require('firebase-admin/app');
+const { FireSQL } = require('firesql');
 
 const deleteCollectionFirebase = async (collId, batchSize) => {
   const db = admin.firestore()
@@ -56,20 +57,27 @@ exports.getAllCollections = async () => {
   })
 }
 
-exports.getDocuments = async (collId) => {
+exports.getDocuments = async (collId, query) => {
   const db = admin.firestore()
-  const snapshot = await db.collection(collId).get()
-  const res = []
-  if(snapshot.empty){
+  let snapshot = []
+  if(query != undefined){
+    const fireSQL = new FireSQL(db)
+    res = await fireSQL.query(query, {includeId: '_id'})
     return res
   }else{
-    snapshot.forEach((item) => {
-      res.push({
-        _id: item.id,
-        ...item.data()
+    snapshot = await db.collection(collId).get()
+    const res = []
+    if(snapshot.empty){
+      return res
+    }else{
+      snapshot.forEach((item) => {
+        res.push({
+          _id: item.id,
+          ...item.data()
+        })
       })
-    })
-    return res
+      return res
+    }
   }
 }
 
@@ -129,14 +137,17 @@ exports.addDocument = async (collId, docId, data) => {
     } else {
       await db.collection(collId).doc(docId).set(data)
     }
-    if(snapshot.empty){
-      return null
-    }else{
-      return {
-        _id: snapshot.id,
-        ...snapshot.data()
-      }
-    }
+    return true
+  }catch(e){
+    console.log(e)
+    return false
+  }
+}
+
+exports.updateDocument = async (collId, docId, data) => {
+  try{
+    const db = admin.firestore()
+    await db.collection(collId).doc(docId).update(data)
     return true
   }catch(e){
     console.log(e)

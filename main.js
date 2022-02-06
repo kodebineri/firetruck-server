@@ -1,5 +1,6 @@
 const { app, BrowserWindow } = require('electron')
 const { initMenu } = require('./menu')
+const path = require('path')
 require('./listener')
 require('./menu')
 
@@ -8,7 +9,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      // preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
       contextIsolation: false,
       nodeIntegration: true
     }

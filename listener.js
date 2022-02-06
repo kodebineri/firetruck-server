@@ -1,7 +1,8 @@
 const { ipcMain, dialog } = require("electron")
 const firebase = require('./firebase')
 const fs = require('fs')
-const csvtojsonV2=require("csvtojson/v2")
+const csvtojsonV2 = require("csvtojson/v2")
+const ApiResponse = require('./response')
 
 ipcMain.on('init', (event, arg) => {
   console.log('call init')
@@ -15,13 +16,29 @@ ipcMain.on('getCollections', async (event, arg) => {
   event.returnValue = data
 })
 
-ipcMain.on('getDocuments', async (event, arg) => {
-  console.log('call getDocuments', arg)
-  if(arg != undefined){
-    const data = await firebase.getDocuments(arg)
-    event.returnValue = data
-  }else{
-    event.returnValue = []
+ipcMain.on('getDocuments', async (event, {collId, query}) => {
+  console.log('call getDocuments', collId, query)
+  try{
+    if(collId != undefined){
+      const data = await firebase.getDocuments(collId, query)
+      event.returnValue = new ApiResponse(true, data)
+    }else{
+      event.returnValue = new ApiResponse(true, [])
+    }
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, [], e)
+  }
+})
+
+ipcMain.on('getDocumentById', async (event, {collId, docId}) => {
+  console.log('call getDocumentById', collId, docId)
+  try{
+    const data = await firebase.getDocumentById(collId, docId)
+    event.returnValue = new ApiResponse(true, data)
+  }catch(e){
+    console.log(e)
+    event.returnValue = new ApiResponse(false, {}, e)
   }
 })
 
@@ -164,4 +181,37 @@ ipcMain.on('renameCollection', async (event, {collId, newName}) => {
 ipcMain.on('duplicateCollection', async (event, {collId, newName}) => {
   console.log('call duplicateCollection', collId, newName)
   event.returnValue = await firebase.duplicateCollection(collId, newName)
+})
+
+ipcMain.on('addDocument', async (event, {collId, docId, data}) => {
+  console.log('call addDocument', collId, docId, data)
+  event.returnValue = await firebase.addDocument(collId, docId, data)
+})
+
+ipcMain.on('editDocument', async (event, {collId, docId, data}) => {
+  console.log('call editDocument', collId, docId, data)
+  event.returnValue = await firebase.updateDocument(collId, docId, data)
+})
+
+ipcMain.on('deleteDocument', async (event, {collId, docId}) => {
+  console.log('call deleteDocument', docId)
+  event.returnValue = await firebase.deleteDocumentById(collId, docId)
+})
+
+ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId}) => {
+  console.log('call duplicateDocument', collId, docId, newDocId)
+  event.returnValue = await firebase.duplicateDocument(collId, docId, newDocId)
+})
+
+ipcMain.handle('dark-mode:toggle', () => {
+  if (nativeTheme.shouldUseDarkColors) {
+    nativeTheme.themeSource = 'light'
+  } else {
+    nativeTheme.themeSource = 'dark'
+  }
+  return nativeTheme.shouldUseDarkColors
+})
+
+ipcMain.handle('dark-mode:system', () => {
+  nativeTheme.themeSource = 'system'
 })
