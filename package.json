@@ -1,5 +1,5 @@
 {
-  "name": "FireTruck Firestore Manager",
+  "name": "firetruck-firestore-manager",
   "version": "0.1.0",
   "description": "Manage Firestore with Ease",
   "main": "main.js",
