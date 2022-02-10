@@ -4,6 +4,12 @@ const fs = require('fs')
 const csvtojsonV2 = require("csvtojson/v2")
 const ApiResponse = require('./response')
 
+let browserWindow
+
+exports.initListener = (window) => {
+  browserWindow = window
+}
+
 ipcMain.on('init', (event, arg) => {
   console.log('call init')
   try{
@@ -13,6 +19,7 @@ ipcMain.on('init', (event, arg) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, [], e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -24,6 +31,7 @@ ipcMain.on('getCollections', async (event, arg) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, [], e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -39,6 +47,7 @@ ipcMain.on('getDocuments', async (event, {collId, query}) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, [], e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -50,6 +59,7 @@ ipcMain.on('getDocumentById', async (event, {collId, docId}) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, {}, e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -68,6 +78,7 @@ ipcMain.on('browseServiceAccount', (event, arg) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -85,6 +96,7 @@ ipcMain.on('browseOutputDirectory', (event, arg) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -102,6 +114,7 @@ ipcMain.on('browseInputDirectory', (event, arg) => {
   }catch(e){
     console.log(e)
     event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -117,6 +130,7 @@ ipcMain.on('exportJson', async (event, { filename, path, collId }) => {
     })
   }catch(e){
     console.log(e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -127,9 +141,14 @@ ipcMain.on('importJson', async (event, { path, collId }) => {
     const data = JSON.parse(raw)
     if(collId != undefined){
       await firebase.replaceImportData(collId, data)
+      event.returnValue = new ApiResponse(true, 'ok')
+    }else{
+      throw new Error('collId is undefined')
     }
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -140,9 +159,14 @@ ipcMain.on('addJson', async (event, { path, collId }) => {
     const data = JSON.parse(raw)
     if(collId != undefined){
       await firebase.importData(collId, data)
+      event.returnValue = new ApiResponse(true, 'ok')
+    }else{
+      throw new Error('collId is undefined')
     }
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -186,6 +210,7 @@ ipcMain.on('exportCSV', async (event, { filename, path, collId }) => {
     })
   }catch(e){
     console.log(e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -195,9 +220,14 @@ ipcMain.on('importCSV', async (event, { path, collId, options }) => {
     const data = await csvtojsonV2(options).fromFile(path)
     if(collId != undefined){
       await firebase.replaceImportData(collId, data)
+      event.returnValue = new ApiResponse(true, 'ok')
+    }else{
+      throw new Error('collId is undefined')
     }
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -209,9 +239,14 @@ ipcMain.on('addCSV', async (event, { path, collId }) => {
     }).fromFile(path)
     if(collId != undefined){
       await firebase.importData(collId, data)
+      event.returnValue = new ApiResponse(true, 'ok')
+    }else{
+      throw new Error('collId is undefined')
     }
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -219,8 +254,11 @@ ipcMain.on('addCollection', async (event, {collId, docId, data}) => {
   console.log('call addCollection', collId, docId, data)
   try{
     await firebase.addCollection(collId, docId, data)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -228,8 +266,11 @@ ipcMain.on('deleteCollection', async (event, collId) => {
   console.log('call deleteCollection', collId)
   try{
     await firebase.deleteCollection(collId)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -237,8 +278,11 @@ ipcMain.on('renameCollection', async (event, {collId, newName}) => {
   console.log('call renameCollection', collId, newName)
   try{
     await firebase.renameCollection(collId, newName)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -246,8 +290,11 @@ ipcMain.on('duplicateCollection', async (event, {collId, newName}) => {
   console.log('call duplicateCollection', collId, newName)
   try{
     await firebase.duplicateCollection(collId, newName)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -255,8 +302,11 @@ ipcMain.on('addDocument', async (event, {collId, docId, data}) => {
   console.log('call addDocument', collId, docId, data)
   try{
     await firebase.addDocument(collId, docId, data)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -264,8 +314,11 @@ ipcMain.on('editDocument', async (event, {collId, docId, data}) => {
   console.log('call editDocument', collId, docId, data)
   try{
     await firebase.updateDocument(collId, docId, data)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -273,8 +326,11 @@ ipcMain.on('deleteDocument', async (event, {collId, docId}) => {
   console.log('call deleteDocument', docId)
   try{
     await firebase.deleteDocumentById(collId, docId)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
@@ -282,8 +338,11 @@ ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId}) => {
   console.log('call duplicateDocument', collId, docId, newDocId)
   try{
     await firebase.duplicateDocument(collId, docId, newDocId)
+    event.returnValue = new ApiResponse(true, 'ok')
   }catch(e){
     console.log(e)
+    event.returnValue = new ApiResponse(false, '', e)
+    browserWindow.webContents.send('error', e)
   }
 })
 
