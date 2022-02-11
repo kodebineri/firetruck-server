@@ -9,7 +9,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "author": "zmachmobile",
+  "author": "Kodebineri",
   "license": "ISC",
   "devDependencies": {
     "electron": "^16.0.7",
@@ -20,11 +20,14 @@
     "csv-parse": "^5.0.4",
     "csvtojson": "^2.0.10",
     "electron-context-menu": "^3.1.1",
+    "firebase": "^9.6.6",
     "firebase-admin": "^10.0.1",
     "firesql": "^2.0.2"
   },
   "build": {
     "appId": "com.kodebineri.firetruck",
+    "productName": "FireTruck",
+    "buildVersion": 2,
     "mac": {
       "category": "Utilities"
     }
