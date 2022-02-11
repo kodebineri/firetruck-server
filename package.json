@@ -24,7 +24,7 @@
     "firesql": "^2.0.2"
   },
   "build": {
-    "appId": "com.zmachmobile.firetruk",
+    "appId": "com.kodebineri.firetruck",
     "mac": {
       "category": "Utilities"
     }
