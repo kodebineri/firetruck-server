@@ -196,7 +196,7 @@ exports.importData = async (collId, data) => {
 }
 
 exports.replaceImportData = async (collId, data) => {
-  this.deleteCollection(collId)
+  await this.deleteCollection(collId)
   const db = admin.firestore()
   data.forEach(async (doc) => {
     await db.collection(collId).add(doc)

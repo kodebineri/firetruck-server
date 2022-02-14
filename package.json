@@ -1,7 +1,7 @@
 {
   "name": "firetruck-firestore-manager",
-  "version": "0.1.0",
-  "description": "Manage Firestore with Ease",
+  "version": "0.0.1",
+  "description": "Firestore Reconnect Reimagined",
   "main": "main.js",
   "scripts": {
     "test": "jest",
@@ -9,7 +9,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
-  "author": "Kodebineri",
+  "author": "Kodebineri Software",
   "license": "ISC",
   "devDependencies": {
     "electron": "^16.0.7",
@@ -27,7 +27,7 @@
   "build": {
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
-    "buildVersion": 2,
+    "buildVersion": 5,
     "mac": {
       "category": "Utilities"
     }
