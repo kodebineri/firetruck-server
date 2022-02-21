@@ -7,7 +7,7 @@
     "test": "jest",
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder --publish=never"
   },
   "author": "Kodebineri Software",
   "license": "ISC",
