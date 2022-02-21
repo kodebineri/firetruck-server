@@ -7,11 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
-        run: sudo apt update && sudo apt install -y sshpass openssh-client golang git
+        run: sudo apt update && sudo apt install -y sshpass openssh-client git wget
       - name: install node js
         run: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
       - name: install yarn
         run: npm install --global yarn
+      - name: download golang
+        run: wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
+      - name: extract golang
+        run: sudo tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
+      - name: set golang env
+        run: echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile && echo "export GOPATH=~/.go" >> ~/.profile && source ~/.profile
       - name: create new directory
         run: mkdir -p $HOME/app
       - name: download storage-uploader
