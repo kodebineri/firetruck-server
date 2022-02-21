@@ -19,7 +19,7 @@ jobs:
       - name: download firetruck server
         run: git clone https://github.com/kodebineri/firetruck-server.git
       - name: build app
-        run: cd $HOME/app/firestruck-server && yarn install && yarn dist
+        run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: build uploader
         run: cd $HOME/app/storage-uploader && go install && go build
       - name: distribute
