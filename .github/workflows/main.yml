@@ -13,11 +13,11 @@ jobs:
       - name: install yarn
         run: npm install --global yarn
       - name: create new directory
-        run: mkdir -p $HOME/app && cd $HOME/app
-      - name: Download storage-uploader
-        run: git clone https://github.com/kodebineri/storage-uploader.git
+        run: mkdir -p $HOME/app
+      - name: download storage-uploader
+        run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
       - name: download firetruck server
-        run: git clone https://github.com/kodebineri/firetruck-server.git
+        run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
       - name: build app
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: build uploader
