@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install dependencies
+      - name: install dependencies
         run: sudo apt update && sudo apt install -y sshpass openssh-client git wget
       - name: install node js
         run: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
@@ -32,4 +32,4 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader FireTruck-0.0.1-linux.zip
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.AppImage
