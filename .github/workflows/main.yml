@@ -13,17 +13,17 @@ jobs:
       - name: install yarn
         run: npm install --global yarn
       - name: create new directory
-        run: mkdir -p /app && cd /app
+        run: mkdir -p $HOME/app && cd $HOME/app
       - name: Download storage-uploader
         run: git clone https://github.com/kodebineri/storage-uploader.git
-      - name: Download firetruck server
+      - name: download firetruck server
         run: git clone https://github.com/kodebineri/firetruck-server.git
-      - name: Build app
-        run: cd /app/firestruck-server && yarn install && yarn dist
-      - name: Build uploader
-        run: cd /app/storage-uploader && go install && go build
-      - name: Distribute
+      - name: build app
+        run: cd $HOME/app/firestruck-server && yarn install && yarn dist
+      - name: build uploader
+        run: cd $HOME/app/storage-uploader && go install && go build
+      - name: distribute
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd /app/storage-uploader && ./storage-uploader FireTruck-0.0.1-linux.zip
+        run: cd $HOME/app/storage-uploader && ./storage-uploader FireTruck-0.0.1-linux.zip
