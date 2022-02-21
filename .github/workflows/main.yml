@@ -66,4 +66,4 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck\ Setup\ 0.0.1.exe
+        run: cd $HOME/app/storage-uploader && ./storage-uploader "$HOME/app/firetruck-server/dist/FireTruck Setup 0.0.1.exe"
