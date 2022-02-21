@@ -1,0 +1,29 @@
+name: Distribution
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y sshpass openssh-client golang git
+      - name: install node js
+        run: curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
+      - name: install yarn
+        run: npm install --global yarn
+      - name: create new directory
+        run: mkdir -p /app && cd /app
+      - name: Download storage-uploader
+        run: git clone https://github.com/kodebineri/storage-uploader.git
+      - name: Download firetruck server
+        run: git clone https://github.com/kodebineri/firetruck-server.git
+      - name: Build app
+        run: cd /app/firestruck-server && yarn install && yarn dist
+      - name: Build uploader
+        run: cd /app/storage-uploader && go install && go build
+      - name: Distribute
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd /app/storage-uploader && ./storage-uploader FireTruck-0.0.1-linux.zip
