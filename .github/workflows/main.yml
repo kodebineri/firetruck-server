@@ -39,7 +39,7 @@ jobs:
       - name: install yarn
         run: npm install --global yarn
       - name: download golang
-        run: brew remove go && brew install golang
+        run: brew uninstall go && brew install golang
       - name: create new directory
         run: mkdir -p $HOME/app
       - name: download storage-uploader
