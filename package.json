@@ -1,6 +1,5 @@
 {
   "name": "firetruck-firestore-manager",
-  "email": "kodebineri@gmail.com",
   "version": "0.0.1",
   "description": "Firestore Reconnect Reimagined",
   "main": "main.js",
@@ -10,7 +9,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder --publish=never"
   },
-  "author": "Kodebineri Software",
+  "author": "Kodebineri Software <kodebineri@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "electron": "^16.0.7",
