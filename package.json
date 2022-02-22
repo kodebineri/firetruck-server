@@ -58,12 +58,6 @@
           ]
         },
         {
-          "target": "pacman",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
           "target": "AppImage",
           "arch": [
             "x64",
