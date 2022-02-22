@@ -26,22 +26,22 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.AppImage && && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.AppImage
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.AppImage && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.AppImage
       - name: Distribute DEB
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager_0.0.1_amd64.deb && && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager_0.0.1_arm64.deb
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager_0.0.1_amd64.deb && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager_0.0.1_arm64.deb
       - name: Distribute RPM
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.x86_64.rpm && && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.aarch64.rpm
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.x86_64.rpm && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.aarch64.rpm
       - name: Distribute Pacman
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.pacman && && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1-aarch64.pacman
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-firestore-manager-0.0.1.pacman
   build-mac:
     runs-on: macos-latest
     steps:
