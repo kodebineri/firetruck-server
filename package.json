@@ -1,5 +1,5 @@
 {
-  "name": "firetruck-firestore-manager",
+  "name": "firetruck",
   "version": "0.0.1",
   "description": "Firestore Reconnect Reimagined",
   "main": "main.js",
