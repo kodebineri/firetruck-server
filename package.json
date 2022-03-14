@@ -40,7 +40,9 @@
           ]
         },
         {
-          "target": "mas"
+          "target": "mas",
+          "entitlements": "build/entitlements.mas.plist",
+          "entitlementsInherit": "build/entitlements.mas.inherit.plist"
         }
       ]
     },
