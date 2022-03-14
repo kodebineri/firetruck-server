@@ -58,10 +58,10 @@ jobs:
       - name: Create Apple Certificate from Secret
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-        run: echo "$APPLE_CERTIFICATE" | base64 --decode > ${HOME}/certificate.p12
+        run: echo "$APPLE_CERTIFICATE" | base64 --decode > $HOME/app/firetruck-server/certificate.p12
       - name: Build app
         env:
-          CSC_LINK: file://~/certificate.p12
+          CSC_LINK: certificate.p12
           CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: Build uploader
