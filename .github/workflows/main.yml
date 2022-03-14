@@ -55,6 +55,14 @@ jobs:
         run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
       - name: Download firetruck server
         run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
+      - name: Create Apple Certificate from Secret
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+        run: echo "$APPLE_CERTIFICATE" | base64 --decode > ${HOME}/certificate.p12
+      - name: Code sign
+        env:
+          CSC_LINK: ${HOME}/certificate.p12
+          CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
       - name: Build app
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: Build uploader
