@@ -3,47 +3,47 @@ on:
   push:
     branches: [ main ]
 jobs:
-  # build-linux:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download Snapcraft
-  #       run: sudo apt-get update && sudo snap install snapcraft --classic
-  #     - name: Download golang
-  #       run: wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
-  #     - name: Extract golang
-  #       run: sudo tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
-  #     - name: Set golang env
-  #       run: echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile && echo "export GOPATH=~/.go" >> ~/.profile && source ~/.profile
-  #     - name: Create new directory
-  #       run: mkdir -p $HOME/app
-  #     - name: Download storage-uploader
-  #       run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
-  #     - name: Download firetruck server
-  #       run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
-  #     - name: Build app
-  #       run: cd $HOME/app/firetruck-server && yarn install && yarn dist
-  #     - name: Build uploader
-  #       run: cd $HOME/app/storage-uploader && go install && go build
-  #     - name: Distribute AppImage
-  #       env:
-  #         CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
-  #         STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-  #       run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.AppImage && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.AppImage
-  #     - name: Distribute DEB
-  #       env:
-  #         CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
-  #         STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-  #       run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_arm64.deb && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_amd64.deb
-  #     - name: Distribute RPM
-  #       env:
-  #         CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
-  #         STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-  #       run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.1.aarch64.rpm && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.1.x86_64.rpm
-  #     - name: Distribute Snap
-  #       env:
-  #         CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
-  #         STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-  #       run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_amd64.snap
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Snapcraft
+        run: sudo apt-get update && sudo snap install snapcraft --classic
+      - name: Download golang
+        run: wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
+      - name: Extract golang
+        run: sudo tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
+      - name: Set golang env
+        run: echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile && echo "export GOPATH=~/.go" >> ~/.profile && source ~/.profile
+      - name: Create new directory
+        run: mkdir -p $HOME/app
+      - name: Download storage-uploader
+        run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
+      - name: Download firetruck server
+        run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
+      - name: Build app
+        run: cd $HOME/app/firetruck-server && yarn install && yarn dist
+      - name: Build uploader
+        run: cd $HOME/app/storage-uploader && go install && go build
+      - name: Distribute AppImage
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.AppImage && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.AppImage
+      - name: Distribute DEB
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_arm64.deb && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_amd64.deb
+      - name: Distribute RPM
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.1.aarch64.rpm && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.1.x86_64.rpm
+      - name: Distribute Snap
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.1_amd64.snap
   build-mac:
     runs-on: macos-latest
     steps:
@@ -71,23 +71,23 @@ jobs:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
         run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.dmg
-  # build-windows:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Download golang
-  #       run: choco install go
-  #     - name: Create new directory
-  #       run: mkdir -p $HOME/app
-  #     - name: Download storage-uploader
-  #       run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
-  #     - name: Download firetruck server
-  #       run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
-  #     - name: Build app
-  #       run: cd $HOME/app/firetruck-server && yarn install && yarn dist
-  #     - name: Build uploader
-  #       run: cd $HOME/app/storage-uploader && go install && go build
-  #     - name: Distribute
-  #       env:
-  #         CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
-  #         STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-  #       run: cd $HOME/app/storage-uploader && ./storage-uploader "$HOME/app/firetruck-server/dist/FireTruck Setup 0.0.1.exe"
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Download golang
+        run: choco install go
+      - name: Create new directory
+        run: mkdir -p $HOME/app
+      - name: Download storage-uploader
+        run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
+      - name: Download firetruck server
+        run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
+      - name: Build app
+        run: cd $HOME/app/firetruck-server && yarn install && yarn dist
+      - name: Build uploader
+        run: cd $HOME/app/storage-uploader && go install && go build
+      - name: Distribute
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader "$HOME/app/firetruck-server/dist/FireTruck Setup 0.0.1.exe"
