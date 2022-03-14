@@ -66,7 +66,6 @@ jobs:
       - name: Build app
         env:
           CSC_LINK: certificate.p12
-          provisioningProfile: firetruckprovisioningprofile.provisionprofile
           CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: Build uploader

@@ -30,6 +30,7 @@
     "buildVersion": 5,
     "mac": {
       "category": "public.app-category.developer-tools",
+      "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
       "target": [
         {
           "target": "dmg",
