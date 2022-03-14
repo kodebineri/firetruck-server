@@ -70,7 +70,7 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.dmg
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.pkg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.pkg
   build-windows:
     runs-on: windows-latest
     steps:
