@@ -59,9 +59,14 @@ jobs:
         env:
           APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
         run: echo "$APPLE_CERTIFICATE" | base64 --decode > $HOME/app/firetruck-server/certificate.p12
+      - name: Create Apple Provisioning Profile from Secret
+        env:
+          APPLE_PROVISIONING_PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE }}
+        run: echo "$APPLE_PROVISIONING_PROFILE" | base64 --decode > $HOME/app/firetruck-server/firetruckprovisioningprofile.provisionprofile
       - name: Build app
         env:
           CSC_LINK: certificate.p12
+          provisioningProfile: firetruckprovisioningprofile.provisionprofile
           CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: Build uploader
@@ -70,7 +75,7 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.pkg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.pkg
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.1-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/mas/FireTruck.app
   build-windows:
     runs-on: windows-latest
     steps:
