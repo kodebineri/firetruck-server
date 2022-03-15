@@ -27,7 +27,7 @@
   "build": {
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
-    "buildVersion": 5,
+    "buildVersion": 6,
     "mac": {
       "category": "public.app-category.developer-tools",
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
