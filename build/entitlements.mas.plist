@@ -5,7 +5,7 @@
     <key>com.apple.application-identifier</key>
     <string>G3H74D3BB8.com.kodebineri.firetruck</string>
     <key>com.apple.developer.team-identifier</key>
-    <string>G3H74D3BB8.com.kodebineri.firetruck</string>
+    <string>G3H74D3BB8</string>
     <key>com.apple.security.app-sandbox</key>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
