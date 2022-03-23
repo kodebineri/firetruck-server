@@ -1,6 +1,8 @@
 const admin = require('firebase-admin')
-const { cert } = require('firebase-admin/app');
+const { cert, getApp } = require('firebase-admin/app');
+const { getFirestore } = require('firebase-admin/firestore');
 const { FireSQL } = require('firesql');
+const config = {}
 
 const deleteCollectionFirebase = async (collId, batchSize) => {
   const db = admin.firestore()
@@ -37,17 +39,23 @@ const deleteQueryBatch = async (query, resolve) => {
   });
 }
 
-exports.initFirebase = (path) => {
+exports.initFirebase = ({ path, sessionId }) => {
   const serviceAccount = require(path)
-  if(!admin.apps.length){
-    admin.initializeApp({
-      credential: cert(serviceAccount)
-    })
+  if(Object.keys(config).length < 1){
+    config[sessionId] = {
+      credential: cert(serviceAccount),
+    }
+    admin.initializeApp(config[sessionId])
   }
+  config[sessionId] = {
+    credential: cert(serviceAccount),
+  }
+  admin.initializeApp(config[sessionId], sessionId)
 }
 
-exports.getAllCollections = async () => {
-  const db = admin.firestore()
+exports.getAllCollections = async ({ sessionId }) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   const colls = await db.listCollections()
   return colls.map((item) => {
     const decoded = JSON.parse(JSON.stringify(item))
@@ -57,8 +65,9 @@ exports.getAllCollections = async () => {
   })
 }
 
-exports.getDocuments = async (collId, query) => {
-  const db = admin.firestore()
+exports.getDocuments = async (collId, query, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   let snapshot = []
   if(query != undefined){
     const fireSQL = new FireSQL(db)
@@ -81,8 +90,9 @@ exports.getDocuments = async (collId, query) => {
   }
 }
 
-exports.getDocumentById = async (collId, docId) => {
-  const db = admin.firestore()
+exports.getDocumentById = async (collId, docId, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   const snapshot = await db.collection(collId).doc(docId).get()
   if(snapshot.empty){
     return null
@@ -94,10 +104,11 @@ exports.getDocumentById = async (collId, docId) => {
   }
 }
 
-exports.deleteCollection = async (collId) => {
+exports.deleteCollection = async (collId, sessionId) => {
   // await deleteCollectionFirebase(collId, 10)
-  const db = admin.firestore()
-  const docs = await this.getDocuments(collId)
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
+  const docs = await this.getDocuments(collId, undefined, sessionId)
   try{
     docs.forEach( async (doc) => {
       await db.collection(collId).doc(doc._id).delete()
@@ -108,15 +119,17 @@ exports.deleteCollection = async (collId) => {
   return true
 }
 
-exports.deleteDocumentById = async (collId, docId) => {
-  const db = admin.firestore()
+exports.deleteDocumentById = async (collId, docId, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   await db.collection(collId).doc(docId).delete()
   return true
 }
 
-exports.addCollection = async (collId, docId, data) => {
+exports.addCollection = async (collId, docId, data, sessionId) => {
   try{
-    const db = admin.firestore()
+    const app = admin.app(sessionId)
+    const db = getFirestore(app)
     if (docId == null) {
       await db.collection(collId).add(data)
     } else {
@@ -129,9 +142,10 @@ exports.addCollection = async (collId, docId, data) => {
   }
 }
 
-exports.addDocument = async (collId, docId, data) => {
+exports.addDocument = async (collId, docId, data, sessionId) => {
   try{
-    const db = admin.firestore()
+    const app = admin.app(sessionId)
+    const db = getFirestore(app)
     if (docId == null) {
       await db.collection(collId).add(data)
     } else {
@@ -144,9 +158,10 @@ exports.addDocument = async (collId, docId, data) => {
   }
 }
 
-exports.updateDocument = async (collId, docId, data) => {
+exports.updateDocument = async (collId, docId, data, sessionId) => {
   try{
-    const db = admin.firestore()
+    const app = admin.app(sessionId)
+    const db = getFirestore(app)
     await db.collection(collId).doc(docId).update(data)
     return true
   }catch(e){
@@ -155,17 +170,19 @@ exports.updateDocument = async (collId, docId, data) => {
   }
 }
 
-exports.duplicateCollection = async (collId, newName) => {
-  const db = admin.firestore()
-  const old = await this.getDocuments(collId)
+exports.duplicateCollection = async (collId, newName, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
+  const old = await this.getDocuments(collId, undefined, sessionId)
   old.forEach(async (doc) => {
     delete doc._id
     await db.collection(newName).add(doc)
   })
 }
 
-exports.duplicateDocument = async (collId, docId, newDocId) => {
-  const db = admin.firestore()
+exports.duplicateDocument = async (collId, docId, newDocId, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   const old = await db.collection(collId).doc(docId).get()
   if(old.empty){
     return false
@@ -178,14 +195,15 @@ exports.duplicateDocument = async (collId, docId, newDocId) => {
   return true
 }
 
-exports.renameCollection = async (collId, newName) => {
-  const db = admin.firestore()
-  const old = await this.getDocuments(collId)
+exports.renameCollection = async (collId, newName, sessionId) => {
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
+  const old = await this.getDocuments(collId, undefined, sessionId)
   old.forEach(async (doc) => {
     delete doc._id
     await db.collection(newName).add(doc)
   })
-  await this.deleteCollection(collId)
+  await this.deleteCollection(collId, sessionId)
 }
 
 exports.importData = async (collId, data) => {
@@ -195,9 +213,10 @@ exports.importData = async (collId, data) => {
   })
 }
 
-exports.replaceImportData = async (collId, data) => {
+exports.replaceImportData = async (collId, data, sessionId) => {
   await this.deleteCollection(collId)
-  const db = admin.firestore()
+  const app = admin.app(sessionId)
+  const db = getFirestore(app)
   data.forEach(async (doc) => {
     await db.collection(collId).add(doc)
   })

@@ -1,26 +1,10 @@
-const { app, BrowserWindow, session } = require('electron')
-const { initMenu } = require('./menu')
+const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const os = require('os')
-const { initListener } = require('./listener')
+const {createWindow} = require('./window')
 require('./listener')
-require('./menu')
-
-const createWindow = () => {
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: false,
-      nodeIntegration: true
-    }
-  })
-  mainWindow.loadURL('file://' + __dirname + '/client/index.html')
-  // mainWindow.loadURL('http://localhost:3000/')
-  initMenu(mainWindow)
-  initListener(mainWindow)
-}
+require('./context-menu')
+require('./menu-bar')
 
 const reactDevToolsPath = path.join(
   os.homedir(), 

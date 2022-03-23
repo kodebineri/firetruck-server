@@ -1,6 +1,6 @@
 {
   "name": "firetruck",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Firestore Reconnect Reimagined",
   "main": "main.js",
   "scripts": {
@@ -27,7 +27,7 @@
   "build": {
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
-    "buildVersion": 9,
+    "buildVersion": 10,
     "mac": {
       "category": "public.app-category.developer-tools",
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
