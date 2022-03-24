@@ -73,7 +73,7 @@ ipcMain.on('browseServiceAccount', (event, arg) => {
     if(path !== undefined){
       event.returnValue = new ApiResponse(true, path[0])
     }else{
-      event.returnValue = new ApiResponse(false, '', e)
+      event.returnValue = new ApiResponse(false, '', '')
     }
   }catch(e){
     console.log(e)
@@ -91,7 +91,7 @@ ipcMain.on('browseOutputDirectory', (event, arg) => {
     if(path !== undefined){
       event.returnValue = new ApiResponse(true, path[0])
     }else{
-      event.returnValue = new ApiResponse(false, '', e)
+      event.returnValue = new ApiResponse(false, '', '')
     }
   }catch(e){
     console.log(e)
@@ -109,7 +109,7 @@ ipcMain.on('browseInputDirectory', (event, arg) => {
     if(path !== undefined){
       event.returnValue = new ApiResponse(true, path[0])
     }else{
-      event.returnValue = new ApiResponse(false, '', e)
+      event.returnValue = new ApiResponse(false, '', '')
     }
   }catch(e){
     console.log(e)
