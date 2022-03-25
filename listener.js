@@ -346,6 +346,10 @@ ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId, sessionI
   }
 })
 
+ipcMain.on('error', (_, arg) => {
+  browserWindow.webContents.send('error', arg)
+})
+
 ipcMain.handle('dark-mode:toggle', () => {
   if (nativeTheme.shouldUseDarkColors) {
     nativeTheme.themeSource = 'light'
