@@ -1,3 +1,4 @@
+const { firestore } = require('firebase-admin');
 const admin = require('firebase-admin')
 const { cert, getApp } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
@@ -65,7 +66,7 @@ exports.getAllCollections = async ({ sessionId }) => {
   })
 }
 
-exports.getDocuments = async (collId, query, sessionId) => {
+exports.getDocuments = async (collId, query, sessionId, page, perPage) => {
   const app = admin.app(sessionId)
   const db = getFirestore(app)
   let snapshot = []
@@ -74,7 +75,12 @@ exports.getDocuments = async (collId, query, sessionId) => {
     res = await fireSQL.query(query, {includeId: '_id'})
     return res
   }else{
-    snapshot = await db.collection(collId).get()
+    const offset = (page - 1) * perPage
+    if(page == undefined || perPage == undefined){
+      snapshot = await db.collection(collId).get()
+    }else{
+      snapshot = await db.collection(collId).limit(perPage).offset(offset).get()
+    }
     const res = []
     if(snapshot.empty){
       return res
@@ -108,14 +114,15 @@ exports.deleteCollection = async (collId, sessionId) => {
   // await deleteCollectionFirebase(collId, 10)
   const app = admin.app(sessionId)
   const db = getFirestore(app)
-  const docs = await this.getDocuments(collId, undefined, sessionId)
-  try{
-    docs.forEach( async (doc) => {
-      await db.collection(collId).doc(doc._id).delete()
-    })
-  }catch(e){
-    console.log(e)
-  }
+  await db.recursiveDelete(db.collection(collId))
+  // const docs = await this.getDocuments(collId, undefined, sessionId, undefined, undefined)
+  // try{
+  //   docs.forEach( async (doc) => {
+  //     await db.collection(collId).doc(doc._id).delete()
+  //   })
+  // }catch(e){
+  //   console.log(e)
+  // }
   return true
 }
 
@@ -173,7 +180,7 @@ exports.updateDocument = async (collId, docId, data, sessionId) => {
 exports.duplicateCollection = async (collId, newName, sessionId) => {
   const app = admin.app(sessionId)
   const db = getFirestore(app)
-  const old = await this.getDocuments(collId, undefined, sessionId)
+  const old = await this.getDocuments(collId, undefined, sessionId, undefined, undefined)
   old.forEach(async (doc) => {
     delete doc._id
     await db.collection(newName).add(doc)
@@ -198,7 +205,7 @@ exports.duplicateDocument = async (collId, docId, newDocId, sessionId) => {
 exports.renameCollection = async (collId, newName, sessionId) => {
   const app = admin.app(sessionId)
   const db = getFirestore(app)
-  const old = await this.getDocuments(collId, undefined, sessionId)
+  const old = await this.getDocuments(collId, undefined, sessionId, undefined, undefined)
   old.forEach(async (doc) => {
     delete doc._id
     await db.collection(newName).add(doc)

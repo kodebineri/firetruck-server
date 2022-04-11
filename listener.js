@@ -35,11 +35,11 @@ ipcMain.on('getCollections', async (event, arg) => {
   }
 })
 
-ipcMain.on('getDocuments', async (event, {collId, query, sessionId}) => {
-  console.log('call getDocuments', collId, query)
+ipcMain.on('getDocuments', async (event, {collId, query, sessionId, page, perPage}) => {
+  console.log('call getDocuments', collId, query, page, perPage)
   try{
     if(collId != undefined){
-      const data = await firebase.getDocuments(collId, query, sessionId)
+      const data = await firebase.getDocuments(collId, query, sessionId, page, perPage)
       event.returnValue = new ApiResponse(true, data)
     }else{
       event.returnValue = new ApiResponse(true, [])
