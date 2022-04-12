@@ -1,4 +1,4 @@
-const { app, Menu } = require('electron')
+const { app, Menu, ipcMain } = require('electron')
 const {createWindow} = require('./window')
 
 const isMac = process.platform === 'darwin'
@@ -28,6 +28,14 @@ const template = [
         accelerator: process.platform === 'darwin' ? 'Cmd+N' : 'Ctrl+N',
         click: () => createWindow()
       },
+      { type: 'separator' },
+      {
+        label: 'Check for Updates',
+        click: () => {
+          ipcMain.emit('checkUpdates')
+        }
+      },
+      { type: 'separator' },
       (isMac ? {
         label: 'Close',
         role: 'close'
@@ -72,7 +80,7 @@ const template = [
     submenu: [
       { role: 'reload' },
       { role: 'forceReload' },
-      // { role: 'toggleDevTools' },
+      { role: 'toggleDevTools' },
       { type: 'separator' },
       { role: 'resetZoom' },
       { role: 'zoomIn' },

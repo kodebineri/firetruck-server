@@ -1,8 +1,9 @@
-const { ipcMain, dialog } = require("electron")
+const { ipcMain, dialog, app } = require("electron")
 const firebase = require('./firebase')
 const fs = require('fs')
 const csvtojsonV2 = require("csvtojson/v2")
 const ApiResponse = require('./response')
+const https = require('https')
 
 let browserWindow
 
@@ -10,10 +11,17 @@ exports.initListener = (window) => {
   browserWindow = window
 }
 
+const getTitle = (path) => {
+  const splitted = path.split('/')
+  const last = splitted[splitted.length - 1].replace('.json', '')
+  return last
+}
+
 ipcMain.on('init', (event, arg) => {
   console.log('call init')
   try{
     // const dummy = '/Users/zamahsyari/Downloads/kamus-quran-mudah-dev-firebase-adminsdk-5ru3a-9653c12ff2.json'
+    browserWindow.setTitle(getTitle(arg.path))
     firebase.initFirebase({ path: arg.path, sessionId: arg.sessionId })
     event.returnValue = new ApiResponse(true, [])
   }catch(e){
@@ -344,6 +352,27 @@ ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId, sessionI
     event.returnValue = new ApiResponse(false, '', e)
     browserWindow.webContents.send('error', e)
   }
+})
+
+ipcMain.on('checkUpdates', async () => {
+  console.log('call checkUpdates')
+  const version = app.getVersion()
+  const baseUrl = 'https://asia-southeast2-kodebineri-web.cloudfunctions.net/checkUpdates'
+  const req = https.get(`${baseUrl}?version=${version}`, res => {
+    res.on('data', d => {
+      browserWindow.webContents.send('update-response', JSON.parse(d.toString()))
+    })
+  })
+  req.on('error', err => {
+    browserWindow.webContents.send('error', err)
+  })
+  req.end()
+})
+
+ipcMain.on('goto', (_, url) => {
+  console.log('call goto', url)
+  const { shell } = require('electron')
+  shell.openExternal(url)
 })
 
 ipcMain.on('error', (_, arg) => {
