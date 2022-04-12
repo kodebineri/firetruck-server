@@ -14,6 +14,7 @@
   "devDependencies": {
     "electron": "^16.0.7",
     "electron-builder": "^22.14.5",
+    "electron-notarize": "^1.2.1",
     "jest": "^27.4.7"
   },
   "dependencies": {
@@ -28,8 +29,10 @@
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
     "buildVersion": 14,
+    "afterSign": "scripts/notarize.js",
     "mac": {
       "category": "public.app-category.developer-tools",
+      "hardenedRuntime": true,
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
       "target": [
         {
@@ -43,10 +46,10 @@
           "target": "mas",
           "arch": "universal"
         }
-      ]
-    },
-    "dmg": {
-      "sign": true
+      ],
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
+      "gatekeeperAssess": false
     },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",

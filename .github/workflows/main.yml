@@ -67,6 +67,8 @@ jobs:
         env:
           CSC_LINK: certificate.p12
           CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
         run: cd $HOME/app/firetruck-server && yarn install && yarn dist
       - name: Build uploader
         run: cd $HOME/app/storage-uploader && go install && go build
