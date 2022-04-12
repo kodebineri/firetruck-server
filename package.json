@@ -45,6 +45,9 @@
         }
       ]
     },
+    "dmg": {
+      "sign": true
+    },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",
       "entitlementsInherit": "build/entitlements.mas.inherit.plist"
