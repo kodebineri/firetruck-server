@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^16.0.7",
-    "electron-builder": "^22.14.5",
+    "electron-builder": "^23.0.3",
     "electron-notarize": "^1.2.1",
     "jest": "^27.4.7"
   },
@@ -45,11 +45,17 @@
         {
           "target": "mas",
           "arch": "universal"
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
         }
       ],
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.inherit.plist",
-      "gatekeeperAssess": false
+      "entitlementsInherit": "build/entitlements.mac.inherit.plist"
     },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",
