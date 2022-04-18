@@ -8,12 +8,6 @@ jobs:
     steps:
       - name: Download Snapcraft
         run: sudo apt-get update && sudo snap install snapcraft --classic
-      - name: Download golang
-        run: wget https://go.dev/dl/go1.17.7.linux-amd64.tar.gz
-      - name: Extract golang
-        run: sudo tar -C /usr/local -xzf go1.17.7.linux-amd64.tar.gz
-      - name: Set golang env
-        run: echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile && echo "export GOPATH=~/.go" >> ~/.profile && source ~/.profile
       - name: Create new directory
         run: mkdir -p $HOME/app
       - name: Download storage-uploader
