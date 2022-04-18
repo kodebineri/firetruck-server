@@ -32,7 +32,7 @@ const template = [
       {
         label: 'Check for Updates',
         click: () => {
-          ipcMain.emit('checkUpdates')
+          ipcMain.emit('checkUpdates', null, true)
         }
       },
       { type: 'separator' },

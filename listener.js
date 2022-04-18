@@ -354,13 +354,18 @@ ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId, sessionI
   }
 })
 
-ipcMain.on('checkUpdates', async () => {
-  console.log('call checkUpdates')
+ipcMain.on('checkUpdates', async (_, is_shown = false) => {
+  console.log('call checkUpdates', is_shown)
   const version = app.getVersion()
   const baseUrl = 'https://asia-southeast2-kodebineri-web.cloudfunctions.net/checkUpdates'
   const req = https.get(`${baseUrl}?version=${version}`, res => {
     res.on('data', d => {
-      browserWindow.webContents.send('update-response', JSON.parse(d.toString()))
+      let data = JSON.parse(d.toString())
+      data = {
+        ...data,
+        is_shown
+      }
+      browserWindow.webContents.send('update-response', data)
     })
   })
   req.on('error', err => {
