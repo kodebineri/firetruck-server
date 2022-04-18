@@ -41,8 +41,6 @@ jobs:
   build-mac:
     runs-on: macos-latest
     steps:
-      - name: Download golang
-        run: rm -rf /usr/local/opt/go@1.15 && brew install golang
       - name: Create new directory
         run: mkdir -p $HOME/app
       - name: Download storage-uploader
