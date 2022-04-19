@@ -44,7 +44,7 @@ ipcMain.on('getCollections', async (event, arg) => {
 })
 
 ipcMain.on('getDocuments', async (event, {collId, query, sessionId, page, perPage}) => {
-  console.log('call getDocuments', collId, query, page, perPage)
+  console.log('call getDocuments', collId, query, sessionId, page, perPage)
   try{
     if(collId != undefined){
       const data = await firebase.getDocuments(collId, query, sessionId, page, perPage)
@@ -127,13 +127,13 @@ ipcMain.on('browseInputDirectory', (event, arg) => {
 })
 
 ipcMain.on('exportJson', async (event, { filename, path, collId, sessionId }) => {
-  console.log('call exportJson')
+  console.log('call exportJson', filename, path, collId, sessionId)
   try{
     let data = []
     if(collId != undefined){
-      data = await firebase.getDocuments({ collId, undefined, sessionId })
+      data = await firebase.getDocuments(collId, undefined, sessionId)
     }
-    fs.writeFile(path + '/' + filename + '.json', JSON.stringify(data, null, '\t'), (err) => {
+    fs.writeFile(path + '/' + filename, JSON.stringify(data, null, '\t'), (err) => {
       console.log(err)
     })
   }catch(e){
@@ -143,7 +143,7 @@ ipcMain.on('exportJson', async (event, { filename, path, collId, sessionId }) =>
 })
 
 ipcMain.on('importJson', async (event, { path, collId, sessionId }) => {
-  console.log('call importJson')
+  console.log('call importJson', path, collId, sessionId)
   try{
     const raw = await fs.openSync(path)
     const data = JSON.parse(raw)
@@ -192,7 +192,7 @@ const getHeader = (docs) => {
 }
 
 ipcMain.on('exportCSV', async (event, { filename, path, collId, sessionId }) => {
-  console.log('call exportCSV')
+  console.log('call exportCSV', filename, path, collId, sessionId)
   try{
     let data = []
     let header = []
@@ -213,7 +213,7 @@ ipcMain.on('exportCSV', async (event, { filename, path, collId, sessionId }) => 
       })
       content += dataRow.join(';') + '\n'
     })
-    fs.writeFile(path + '/' + filename + '.csv', content, (err) => {
+    fs.writeFile(path + '/' + filename, content, (err) => {
       console.log(err)
     })
   }catch(e){

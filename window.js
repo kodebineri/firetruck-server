@@ -13,8 +13,8 @@ exports.createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: false,
-      nodeIntegration: true
+      contextIsolation: true,
+      nodeIntegration: false
     }
   })
   mainWindow.loadURL('file://' + __dirname + '/client/index.html')
