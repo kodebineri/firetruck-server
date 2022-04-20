@@ -47,13 +47,6 @@
         }
       ]
     },
-    "dmg": {
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "asarUnpack": "**/*.node"
-    },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",
       "entitlementsInherit": "build/entitlements.mas.plist"
