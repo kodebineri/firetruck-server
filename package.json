@@ -28,8 +28,7 @@
   "build": {
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
-    "buildVersion": 17,
-    "afterSign": "scripts/notarize.js",
+    "buildVersion": 18,
     "mac": {
       "category": "public.app-category.developer-tools",
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
