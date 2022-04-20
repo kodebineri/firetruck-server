@@ -8,6 +8,7 @@ exports.default = async function notarizing(context) {
   }
 
   const appName = context.packager.appInfo.productFilename;
+  console.log('Notarizing app...')
 
   return await notarize({
     appBundleId: 'com.kodebineri.firetruck',
