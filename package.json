@@ -32,9 +32,6 @@
     "afterSign": "scripts/notarize.js",
     "mac": {
       "category": "public.app-category.developer-tools",
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "asarUnpack": "**/*.node",
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
       "target": [
         {
@@ -47,17 +44,15 @@
         {
           "target": "mas",
           "arch": "universal"
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
         }
-      ],
+      ]
+    },
+    "dmg": {
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "asarUnpack": "**/*.node"
     },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",
