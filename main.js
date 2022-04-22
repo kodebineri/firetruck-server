@@ -15,7 +15,7 @@ const recoilDevToolsPath = path.join(
   os.homedir(),
   '/Library/Application Support/Google/Chrome/Profile 1/Extensions/dhjcdlmklldodggmleehadpjephfgflc/1.1.0.0_0'
 )
-
+app.enableSandbox()
 app.whenReady().then(async () => {
   // await session.defaultSession.loadExtension(reactDevToolsPath)
   // await session.defaultSession.loadExtension(recoilDevToolsPath)

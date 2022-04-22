@@ -28,35 +28,23 @@
   "build": {
     "appId": "com.kodebineri.firetruck",
     "productName": "FireTruck",
-    "buildVersion": 19,
-    "afterSign": "scripts/notarize.js",
+    "buildVersion": 20,
     "mac": {
       "category": "public.app-category.developer-tools",
       "provisioningProfile": "firetruckprovisioningprofile.provisionprofile",
       "target": [
         {
-          "target": "dmg",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
-        },
-        {
           "target": "mas",
           "arch": "universal"
         }
-      ],
-      "hardenedRuntime" : true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      ]
     },
     "dmg": {
       "sign": false
     },
     "mas": {
       "entitlements": "build/entitlements.mas.plist",
-      "entitlementsInherit": "build/entitlements.mas.plist"
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist"
     },
     "linux": {
       "category": "Development",
