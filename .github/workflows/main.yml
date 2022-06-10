@@ -22,22 +22,22 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.4.AppImage && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.4-arm64.AppImage
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5.AppImage && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5-arm64.AppImage
       - name: Distribute DEB
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.4_arm64.deb && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.4_amd64.deb
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.5_arm64.deb && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.5_amd64.deb
       - name: Distribute RPM
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.4.aarch64.rpm && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.4.x86_64.rpm
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.5.aarch64.rpm && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck-0.0.5.x86_64.rpm
       - name: Distribute Snap
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.4_amd64.snap
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.5_amd64.snap
   build-mac:
     runs-on: macos-latest
     steps:
@@ -69,7 +69,7 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.4.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.4-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/mas-universal/FireTruck-0.0.4-universal.pkg
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/mas-universal/FireTruck-0.0.5-universal.pkg
   build-windows:
     runs-on: windows-latest
     steps:
@@ -89,4 +89,4 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader "$HOME/app/firetruck-server/dist/FireTruck Setup 0.0.4.exe"
+        run: cd $HOME/app/storage-uploader && ./storage-uploader "$HOME/app/firetruck-server/dist/FireTruck Setup 0.0.5.exe"
