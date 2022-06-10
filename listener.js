@@ -18,7 +18,7 @@ const getTitle = (path) => {
 }
 
 ipcMain.on('init', (event, arg) => {
-  console.log('call init')
+  console.log('call init', arg)
   try{
     // const dummy = '/Users/zamahsyari/Downloads/kamus-quran-mudah-dev-firebase-adminsdk-5ru3a-9653c12ff2.json'
     browserWindow.setTitle(getTitle(arg.path))
@@ -28,11 +28,12 @@ ipcMain.on('init', (event, arg) => {
     console.log(e)
     event.returnValue = new ApiResponse(false, [], e)
     browserWindow.webContents.send('error', e)
+    event.returnValue = new ApiResponse(true, [])
   }
 })
 
 ipcMain.on('getCollections', async (event, arg) => {
-  console.log('call getCollections')
+  console.log('call getCollections', arg)
   try{
     const data = await firebase.getAllCollections({ sessionId: arg.sessionId })
     event.returnValue = new ApiResponse(true, data)
@@ -60,7 +61,7 @@ ipcMain.on('getDocuments', async (event, {collId, query, sessionId, page, perPag
 })
 
 ipcMain.on('getDocumentById', async (event, {collId, docId, sessionId}) => {
-  console.log('call getDocumentById', collId, docId)
+  console.log('call getDocumentById', collId, docId, sessionId)
   try{
     const data = await firebase.getDocumentById(collId, docId, sessionId)
     event.returnValue = new ApiResponse(true, data)
@@ -259,7 +260,7 @@ ipcMain.on('addCSV', async (event, { path, collId }) => {
 })
 
 ipcMain.on('addCollection', async (event, {collId, docId, data, sessionId}) => {
-  console.log('call addCollection', collId, docId, data)
+  console.log('call addCollection', collId, docId, data, sessionId)
   try{
     await firebase.addCollection(collId, docId, data, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -271,7 +272,7 @@ ipcMain.on('addCollection', async (event, {collId, docId, data, sessionId}) => {
 })
 
 ipcMain.on('deleteCollection', async (event, {collId, sessionId}) => {
-  console.log('call deleteCollection', collId)
+  console.log('call deleteCollection', collId, sessionId)
   try{
     await firebase.deleteCollection(collId, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -283,7 +284,7 @@ ipcMain.on('deleteCollection', async (event, {collId, sessionId}) => {
 })
 
 ipcMain.on('renameCollection', async (event, {collId, newName, sessionId}) => {
-  console.log('call renameCollection', collId, newName)
+  console.log('call renameCollection', collId, newName, sessionId)
   try{
     await firebase.renameCollection(collId, newName, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -295,7 +296,7 @@ ipcMain.on('renameCollection', async (event, {collId, newName, sessionId}) => {
 })
 
 ipcMain.on('duplicateCollection', async (event, {collId, newName, sessionId}) => {
-  console.log('call duplicateCollection', collId, newName)
+  console.log('call duplicateCollection', collId, newName, sessionId)
   try{
     await firebase.duplicateCollection(collId, newName, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -307,7 +308,7 @@ ipcMain.on('duplicateCollection', async (event, {collId, newName, sessionId}) =>
 })
 
 ipcMain.on('addDocument', async (event, {collId, docId, data, sessionId}) => {
-  console.log('call addDocument', collId, docId, data)
+  console.log('call addDocument', collId, docId, data, sessionId)
   try{
     await firebase.addDocument(collId, docId, data, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -319,7 +320,7 @@ ipcMain.on('addDocument', async (event, {collId, docId, data, sessionId}) => {
 })
 
 ipcMain.on('editDocument', async (event, {collId, docId, data, sessionId}) => {
-  console.log('call editDocument', collId, docId, data)
+  console.log('call editDocument', collId, docId, data, sessionId)
   try{
     await firebase.updateDocument(collId, docId, data, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -331,7 +332,7 @@ ipcMain.on('editDocument', async (event, {collId, docId, data, sessionId}) => {
 })
 
 ipcMain.on('deleteDocument', async (event, {collId, docId, sessionId}) => {
-  console.log('call deleteDocument', docId)
+  console.log('call deleteDocument', collId, docId, sessionId)
   try{
     await firebase.deleteDocumentById(collId, docId, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')
@@ -343,7 +344,7 @@ ipcMain.on('deleteDocument', async (event, {collId, docId, sessionId}) => {
 })
 
 ipcMain.on('duplicateDocument', async (event, {collId, docId, newDocId, sessionId}) => {
-  console.log('call duplicateDocument', collId, docId, newDocId)
+  console.log('call duplicateDocument', collId, docId, newDocId, sessionId)
   try{
     await firebase.duplicateDocument(collId, docId, newDocId, sessionId)
     event.returnValue = new ApiResponse(true, 'ok')

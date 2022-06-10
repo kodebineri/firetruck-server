@@ -40,18 +40,25 @@ const deleteQueryBatch = async (query, resolve) => {
   });
 }
 
+const checkAppExists = (name, data) => {
+  const filtered = data.filter(item => item.name === name)
+  if(filtered.length > 0){
+    return true
+  }
+  return false
+}
+
 exports.initFirebase = ({ path, sessionId }) => {
-  const serviceAccount = require(path)
-  if(Object.keys(config).length < 1){
+  if(!checkAppExists(sessionId, admin.apps)){
+    const serviceAccount = require(path)
     config[sessionId] = {
       credential: cert(serviceAccount),
     }
-    admin.initializeApp(config[sessionId])
+    if(admin.apps.length < 1){
+      admin.initializeApp()
+    }
+    admin.initializeApp(config[sessionId], sessionId)
   }
-  config[sessionId] = {
-    credential: cert(serviceAccount),
-  }
-  admin.initializeApp(config[sessionId], sessionId)
 }
 
 exports.getAllCollections = async ({ sessionId }) => {
