@@ -38,7 +38,7 @@ jobs:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
         run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/firetruck_0.0.5_amd64.snap
-  build-mac:
+  build-mac-app-store:
     runs-on: macos-latest
     steps:
       - name: Create new directory
@@ -69,7 +69,41 @@ jobs:
         env:
           CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
           STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5-arm64.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/mas-universal/FireTruck-0.0.5-universal.pkg
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/mas-universal/FireTruck-0.0.5-universal.pkg
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - name: Create new directory
+        run: mkdir -p $HOME/app
+      - name: Download storage-uploader
+        run: cd $HOME/app && git clone https://github.com/kodebineri/storage-uploader.git
+      - name: Download firetruck server
+        run: cd $HOME/app && git clone https://github.com/kodebineri/firetruck-server.git
+      - name: Modify package.json
+        run: cd $HOME/app/firetruck-server && mv package.json package-prod.json && mv package-local.json package.json
+      - name: Create Apple Certificate from Secret
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+        run: echo "$APPLE_CERTIFICATE" | base64 --decode > $HOME/app/firetruck-server/certificate.p12
+      - name: Create Apple Provisioning Profile from Secret
+        env:
+          APPLE_PROVISIONING_PROFILE: ${{ secrets.APPLE_PROVISIONING_PROFILE }}
+        run: echo "$APPLE_PROVISIONING_PROFILE" | base64 --decode > $HOME/app/firetruck-server/firetruckprovisioningprofile.provisionprofile
+      - name: Build app
+        env:
+          CSC_LINK: certificate.p12
+          CSC_KEY_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+          APPLETEAMID: ${{ secrets.APPLETEAMID }}
+        run: cd $HOME/app/firetruck-server && yarn install && yarn dist
+      - name: Build uploader
+        run: cd $HOME/app/storage-uploader && go install && go build
+      - name: Distribute
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+        run: cd $HOME/app/storage-uploader && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5.dmg && ./storage-uploader $HOME/app/firetruck-server/dist/FireTruck-0.0.5-arm64.dmg      
   build-windows:
     runs-on: windows-latest
     steps:
